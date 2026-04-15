@@ -143,7 +143,7 @@ function displayCart() {
 
     let subtotal = 0;
 
-    cart.forEach(item, index) => {
+    cart.forEach((item, index) => {
         const itemTotal = parseFloat(item.price.replace("£", "")) * item.quantity;
         subtotal += itemTotal;
 
