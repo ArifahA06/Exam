@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    function sendMessage() {
+    function sendMessage() { 
         const userMessage = chatbotInput.value.trim();
         if (userMessage) {
         appendMessage("user", userMessage);

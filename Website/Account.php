@@ -1,0 +1,115 @@
+<?php
+
+session_start();
+
+$name = $_SESSION['first_name'] ?? 'Guest';
+$alerts = $_SESSION['alerts'] ?? [];
+$active_form = $_SESSION['active_form'] ?? 'login';
+
+session_unset();
+
+if ($name === 'Guest') {
+    $welcome_message = "Welcome, Guest!";
+} else {
+    $welcome_message = "Welcome, $name!";
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Access</title>
+    <link rel="stylesheet" href="Account-Style.css">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.9.1/fonts/remixicon.css">
+</head>
+
+<body>
+
+    <header>
+        <h2 class="logo"></h2>
+        <nav class="navigation">
+            <a href="About.html">About</a>
+            <a href="Farmers.html">Farmers</a>
+            <a href="Shop.html">Shop</a>
+            <a href="Support.html">Support</a>
+            <button class="btnLogin-popup">Account</button>
+        </nav>
+    </header>
+
+    <div class="account-intro-section">
+        <h1>Welcome to Your Account</h1>
+        <p>Access your order history, manage your preferences, update </p>
+        <p>your information and so much more.</p>
+        <p>Just register now or log in to your existing account.</p>
+    </div>
+
+    <div class="wrapper">
+        <span class="icon-close"><i class="ri-close-fill"></i></span>
+        <div class="form-box login">
+            <h2>Login</h2>
+            <form action="Auth_Process.php" method="POST">
+                <div class="input-box">
+                    <span class="icon"><i class="ri-account-circle-fill"></i></span>
+                    <input type="text" required>
+                    <label>MembershipID</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><i class="ri-lock-password-fill"></i></span>
+                    <input type="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="remember-forgot">
+                    <label><input type="checkbox"> Remember Me</label>
+                    <a href="#">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <div class="login-register">
+                    <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
+                </div>
+            </form>
+        </div>
+        
+        <div class="form-box register">
+            <h2>Register</h2>
+            <form action="Auth_Process.php" method="POST">
+                <div class="input-box">
+                    <span class="icon"><i class="ri-profile-fill"></i></span>
+                    <input type="text" required>
+                    <label>First Name</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><i class="ri-profile-fill"></i></span>
+                    <input type="text" required>
+                    <label>Surname</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><i class="ri-mail-fill"></i></span>
+                    <input type="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><i class="ri-lock-password-fill"></i></span>
+                    <input type="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="remember-forgot">
+                    <label><input type="checkbox"> I agree to the terms and conditions</label>
+                </div>
+                <button type="submit" class="btn">Register</button>
+                <div class="login-register">
+                    <p>Already have an account? <a href="#" class="login-link">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+<script src="Account-Script.js"></script>
+
+</html>
