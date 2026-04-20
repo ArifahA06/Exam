@@ -235,3 +235,11 @@ footer {
   background: #ffffff;
   padding: 15px 22px 20px;
 }
+
+.chat-footer .chat-form {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 32px;
+  outline: 1px solid #dfffec;
+}
