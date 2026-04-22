@@ -15,6 +15,7 @@ body {
     background: url(Account_bg.png);
     background-size: cover;
     background-position: center;
+    gap: 20%;
 }
 
 
