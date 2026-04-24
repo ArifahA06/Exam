@@ -1,21 +1,37 @@
-const wrapper = document.querySelector('.wrapper');
-const loginLink = document.querySelector('.login-link');
-const registerLink = document.querySelector('.register-link');
-const btnPopup = document.querySelector('.btnLogin-popup');
-const iconClose = document.querySelector('.icon-close');
+document.addEventListener('DOMContentLoaded', () => {
 
-registerLink.addEventListener('click', ()=> {
-    wrapper.classList.add('active');
-});
+    const wrapper = document.querySelector('.wrapper');
+    const loginLink = document.querySelector('.login-link');
+    const registerLink = document.querySelector('.register-link');
+    const btnPopup = document.querySelector('.btnLogin-popup');
+    const iconClose = document.querySelector('.icon-close');
 
-loginLink.addEventListener('click', ()=> {
-    wrapper.classList.remove('active');
-});
+    if (!wrapper) return;
 
-btnPopup.addEventListener('click', ()=> {
-    wrapper.classList.add('active-popup');
-});
+    registerLink?.addEventListener('click', e => {
+        e.preventDefault();
+        wrapper.classList.add('active');
+    });
 
-iconClose.addEventListener('click', ()=> {
-    wrapper.classList.remove('active-popup');
+    loginLink?.addEventListener('click', e => {
+        e.preventDefault();
+        wrapper.classList.remove('active');
+    });
+
+    btnPopup?.addEventListener('click', () => {
+        wrapper.classList.add('active-popup');
+        document.body.style.overflow = 'hidden';
+    });
+
+    iconClose?.addEventListener('click', () => {
+        wrapper.classList.remove('active-popup', 'active');
+        document.body.style.overflow = '';
+    });
+
+    if (typeof activeForm !== 'undefined') {
+        wrapper.classList.add('active-popup');
+        activeForm === 'register'
+            ? wrapper.classList.add('active')
+            : wrapper.classList.remove('active');
+    }
 });

@@ -255,3 +255,33 @@ header {
 .login-register p a:hover {
     text-decoration: underline;
 }
+
+.dashboard {
+    margin-top: 120px;
+    width: min(900px, 95%);
+    background: rgba(255,255,255,0.9);
+    padding: 30px;
+    border-radius: 12px;
+}
+
+.account-section {
+    margin-bottom: 40px;
+}
+
+.account-section h2 {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 5px;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.order-table th,
+.order-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}

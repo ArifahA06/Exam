@@ -1,90 +1,84 @@
 <?php
-
 session_start();
 require_once 'Configure.php';
 
-if (isset($_POST['btn'])) {
-    $first_name = $_POST['first_name'] ?? '';
-    $surname = $_POST['surname'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $password = password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT);
+if ($_POST['action'] === 'register') {
 
-    $check_email = $conn->query("SELECT Email FROM account sign up WHERE email = ?");
-    if ($check_email->num_rows > 0) {
-        $_SESSION['alerts'][] = [
-            'type' => 'error',
-            'message' => 'Email already exists. Please use a different email address.'
-        ];
+    $first_name = trim($_POST['first_name']);
+    $surname    = trim($_POST['surname']);
+    $email      = trim($_POST['email']);
+    $password   = $_POST['password'];
+
+    if (!$first_name || !$surname || !$email || !$password) {
+        $_SESSION['alerts'][] = ['type'=>'error','message'=>'All fields required'];
+        $_SESSION['active_form'] = 'register';
+        header('Location: Account.php');
+        exit;
+    }
+
+    $stmt = $conn->prepare("SELECT Email FROM `account sign up` WHERE Email=?");
+    $stmt->bind_param("s",$email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $_SESSION['alerts'][] = ['type'=>'error','message'=>'Email already exists'];
         $_SESSION['active_form'] = 'register';
     } else {
-        $conn->query("INSERT INTO account sign up (First_Name, Surname, Email, Password) VALUES (?, ?, ?, ?)");
-        $_SESSION['alerts'][] = [
-            'type' => 'success',
-            'message' => 'Registration successful.'
-        ];
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+
+        $insert = $conn->prepare(
+            "INSERT INTO `account sign up` (`First Name`,`Surname`,`Email`,`Password`)
+             VALUES (?,?,?,?)"
+        );
+        $insert->bind_param("ssss",$first_name,$surname,$email,$hash);
+        $insert->execute();
+
+        $_SESSION['alerts'][] = ['type'=>'success','message'=>'Registration successful'];
         $_SESSION['active_form'] = 'login';
     }
+
     header('Location: Account.php');
-    exit();
+    exit;
 }
 
-if (isset($_POST['btn1'])) {
-    $membership_id = $_POST['membership_id'] ?? '';
-    $password = $_POST['password'] ?? '';
+if ($_POST['action'] === 'login') {
 
-    $result = $conn->query("SELECT * FROM account sign up WHERE MembershipID = ?");
-    if ($result->num_rows > 0) {
+    $id = $_POST['membership_id'];
+    $password = $_POST['password'];
+
+    $stmt = $conn->prepare(
+        "SELECT MembershipID, `First Name`, Password
+         FROM `account sign up` WHERE MembershipID=?"
+    );
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
         if (password_verify($password, $user['Password'])) {
-            $_SESSION['alerts'][] = [
-                'type' => 'success',
-                'message' => 'Login successful.'
-            ];
-            $_SESSION['active_form'] = 'login';
+            $_SESSION['first_name'] = $user['First Name'];
+            $_SESSION['alerts'][] = ['type'=>'success','message'=>'Login successful'];
         } else {
-            $_SESSION['alerts'][] = [
-                'type' => 'error',
-                'message' => 'Invalid password. Please try again.'
-            ];
-            $_SESSION['active_form'] = 'login';
+            $_SESSION['alerts'][] = ['type'=>'error','message'=>'Incorrect password'];
         }
     } else {
-        $_SESSION['alerts'][] = [
-            'type' => 'error',
-            'message' => 'Membership ID not found. Please check your credentials.'
-        ];
-        $_SESSION['active_form'] = 'login';
+        $_SESSION['alerts'][] = ['type'=>'error','message'=>'Membership ID not found'];
     }
+
+    $_SESSION['active_form'] = 'login';
     header('Location: Account.php');
-    exit();
+    exit;
 }
 
-?>
+$_SESSION['user_id'] = $user['MembershipID'];
+$_SESSION['first_name'] = $user['First Name'];
 
-<!DOCTYPE html>
-<html lang="en">
+$_SESSION['alerts'][] = [
+    'type' => 'success',
+    'message' => 'Login successful.'
+];
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Access</title>
-    <link rel="stylesheet" href="Account-Style.css">
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.9.1/fonts/remixicon.css">
-</head>
-
-<body>
-
-    <header>
-        <h2 class="logo"></h2>
-        <nav class="navigation">
-            <a href="About.html">About</a>
-            <a href="Farmers.html">Farmers</a>
-            <a href="Shop.html">Shop</a>
-            <a href="Support.html">Support</a>
-            <button class="btnLogin-popup">Account</button>
-        </nav>
-    </header>
-</body>
-
-</html>
+header('Location: Dashboard.php');
+exit;

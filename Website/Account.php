@@ -1,19 +1,14 @@
 <?php
-
 session_start();
 
 $name = $_SESSION['first_name'] ?? 'Guest';
 $alerts = $_SESSION['alerts'] ?? [];
 $active_form = $_SESSION['active_form'] ?? 'login';
 
-session_unset();
+/* Clear flash messages only */
+unset($_SESSION['alerts'], $_SESSION['active_form']);
 
-if ($name === 'Guest') {
-    $welcome_message = "Welcome, Guest!";
-} else {
-    $welcome_message = "Welcome, $name!";
-}
-
+$welcome_message = "Welcome, " . htmlspecialchars($name) . "!";
 ?>
 
 <!DOCTYPE html>
@@ -53,14 +48,15 @@ if ($name === 'Guest') {
         <div class="form-box login">
             <h2>Login</h2>
             <form action="Auth_Process.php" method="POST">
+                <input type="hidden" name="action" value="login">
                 <div class="input-box">
                     <span class="icon"><i class="ri-account-circle-fill"></i></span>
-                    <input type="text" required>
+                    <input type="text" name="membership_id" required>
                     <label>MembershipID</label>
                 </div>
                 <div class="input-box">
                     <span class="icon"><i class="ri-lock-password-fill"></i></span>
-                    <input type="password" required>
+                    <input type="password" name="password" required>
                     <label>Password</label>
                 </div>
                 <div class="remember-forgot">
@@ -77,24 +73,25 @@ if ($name === 'Guest') {
         <div class="form-box register">
             <h2>Register</h2>
             <form action="Auth_Process.php" method="POST">
+                <input type="hidden" name="action" value="register">
                 <div class="input-box">
                     <span class="icon"><i class="ri-profile-fill"></i></span>
-                    <input type="text" required>
+                    <input type="text" name="first_name" required>
                     <label>First Name</label>
                 </div>
                 <div class="input-box">
                     <span class="icon"><i class="ri-profile-fill"></i></span>
-                    <input type="text" required>
+                    <input type="text" name="surname" required>
                     <label>Surname</label>
                 </div>
                 <div class="input-box">
                     <span class="icon"><i class="ri-mail-fill"></i></span>
-                    <input type="email" required>
+                    <input type="email" name="email" required>
                     <label>Email</label>
                 </div>
                 <div class="input-box">
                     <span class="icon"><i class="ri-lock-password-fill"></i></span>
-                    <input type="password" required>
+                    <input type="password" name="password" required>
                     <label>Password</label>
                 </div>
                 <div class="remember-forgot">
@@ -109,6 +106,15 @@ if ($name === 'Guest') {
     </div>
 
 </body>
+
+<!-- Flash Alerts -->
+<?php foreach ($alerts as $alert): ?>
+    <script>alert("<?= htmlspecialchars($alert['message']) ?>");</script>
+<?php endforeach; ?>
+
+<script>
+const activeForm = "<?= $active_form ?>";
+</script>
 
 <script src="Account-Script.js"></script>
 
